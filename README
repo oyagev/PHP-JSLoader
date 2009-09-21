@@ -1,3 +1,50 @@
-Hi!!
+PHP-JSLoader
 
-I'm still documenting and preparing some examples, so please hang on...
+PHP-JSLoader is intended to help websites that are constantly being developed and modified.
+Basically, JSLoader is used to combine multiple javascript files into one web-readable resource. This gives both flexibility and performance when the website and JS scripts are constantly changing.
+
+How does it work?
+On first load, JSLoader will generate one javascript file for any combination of multiple js files (order doesn’t count…) and store it on a web available space.
+On the following requests, JSLoader will search if a combine file exists for the requested combination. If it does, it will serve it rather than re-generating it.
+
+Why is it good for me?
+
+	1.	The client loads only one JS file, no matter how many JS file the system is composed of.
+	2.	If the developer change the a single byte in one JS file, the whole combination will be regenerated. This will keep your client updated while avoiding the browser cache, as the new combination has a new filename.
+	3.	You may integrate text filters and modifiers that will work each time a combination is generated. You may, for example, minify the newly generated code.
+
+Installation:
+
+	1.	Create a web-available folder for the generated Javascript files.
+	2.	Give the above folder write permissions for PHP. 
+	3.	Copy the JSLoader package to your project.
+	
+
+How-To:
+	
+	1.	First include or require the class file:
+		require_once '../lib/JSLoader.php';
+		
+	2.	Everywhere we want to use this class, we have to retrieve its instance:
+		$jsloader = JSLoader::getInstance();
+		
+	3.	Next, we do one-time configuration:
+		$jsloader->setJavascriptFolder('/home/user/public/html/my_website/js');
+		$jsloader->setJavascriptFolderURL('https://www.my-website.com/js');
+		
+		The first line sets the absolute path to where the combined JS files will be placed.
+		The second line sets a web available URL to the same directory.
+	
+	4.	Now here is the real thing! Everywhere you want to "include" a javascript file, you do:
+		$jsloader->add('/absolute/path/to/file.js');
+		
+		The above line should go each time you need to include a js file and
+		you should pass the absolute path to that file.
+		Also remember to retrieve the class's instance when needed. See section 2.
+		
+	5.	Finally, you should place a <script> tag to include the generated combined JS file.
+		Fortunately, JSLoader does it for you. Just place this code (once) where needed:
+		$jsloader->putScriptTag();
+		
+	Check your page source to see if the file was included and that it's available.
+		
